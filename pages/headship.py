@@ -167,7 +167,7 @@ def mem_form_fill_and_submit(
     
     parsed = urlparse(url_search)
     query_id = parse_qs(parsed.query)
-    mem_id = query_id.get('id', [None])[0]
+    mem_id = query_id.get('mem_id', [None])[0]
     mode = query_id.get('mode', [None])[0]
 
     if pathname == '/headship':
@@ -257,7 +257,9 @@ def mem_form_fill_and_submit(
             description = df['headscore_description'][0]
 
             return [acad_year, name, description, html.Div(style={'disply': 'none'})]
-    raise PreventUpdate
+        
+        else:
+            raise PreventUpdate
         
 
 @app.callback(  
@@ -268,17 +270,17 @@ def mem_form_fill_and_submit(
 def add_active_acad_year(url_search):
     parsed = urlparse(url_search)
     query_ids = parse_qs(parsed.query)
-    return_link = ""
+    return_link= ""
 
-    if 'id' in query_ids:
-        mem_id = query_ids['id'][0]
+    if 'mem_id' in query_ids:
+        mem_id = query_ids.get('mem_id', [None])[0]
         sql = """
             SELECT reaff_acad_year as label, reaff_acad_year as value
             FROM (
                 SELECT DISTINCT reaff_acad_year, CAST(SUBSTRING(reaff_acad_year FROM 1 FOR 4) AS INTEGER) AS start_year
                 FROM reaffiliation
-                WHERE NOT reaff_delete_ind
-                    AND mem_id = %s
+				WHERE NOT reaff_delete_ind
+					AND mem_id = %s
             ) AS sorted_years
             ORDER BY start_year ASC
         """
@@ -286,24 +288,10 @@ def add_active_acad_year(url_search):
         cols = ['label', 'value']
         df = db.querydatafromdatabase(sql, values, cols)
         
-        acad_year_options = df.to_dict('records')
+        acad_year = df.to_dict('records')
+
         return_link = f'/mem_vieweditinfo?id={mem_id}'
-        
-        return acad_year_options, return_link
+
+        return [acad_year, return_link]
     else:
         raise PreventUpdate
-    
-def set_back_button_url(url_search):
-    parsed = urlparse(url_search)
-    query_ids = parse_qs(parsed.query)
-    
-    if 'id' in query_ids:
-        mem_id = query_ids['id'][0]
-        return f'/mem_vieweditinfo?id={mem_id}'
-    else:
-        return '/'
-
-   
-
-
-        
