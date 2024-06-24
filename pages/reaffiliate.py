@@ -8,13 +8,10 @@ from app import app
 from apps import commonmodule as cm
 from apps import dbconnect as db
 from dash_iconify import DashIconify as di
-
-
 # Generate a list of years for the dropdown
 years = list(range(1908, 2099))
 # Get the current year
 current_year = datetime.now().year
-
 comm_options=[
                 {'label': "Academic Affairs Committee", 'value': "1"},
                 {'label': "External Affairs Committee", 'value': "2"},            
@@ -23,7 +20,6 @@ comm_options=[
                 {'label': "Membership and Recruitment Committee", 'value': "5"},           
                 {'label': "Publications and Records Committee", 'value': "6"},
                         ]
-
 reaffiliation_form = dbc.Form(
     [
         html.Div([
@@ -43,6 +39,7 @@ reaffiliation_form = dbc.Form(
                             options = [],
                         ), width = 4),
                     dbc.Col(
+                    
                         dbc.Button("New Member", id="new_mem_btn", color="primary", className="mb-3", style={"width":"100%",'display': 'block','font-size':'14px', 'backgroundColor': '#5474D5'}),
                         width = 2
                     ),
@@ -598,7 +595,6 @@ reaffiliation_form = dbc.Form(
         
         html.Br(),
         html.H5(html.B('Reaffiliation Fee')),
-
         dbc.Row(
             [
                 dbc.Col(
@@ -657,12 +653,12 @@ reaffiliation_form = dbc.Form(
         #        )
         #    ]
         #),
-        
+
+        dbc.Button('Submit', id="submit_form_btn", n_clicks=0),
         dbc.Button('Submit', id="submit_form_btn", n_clicks=0, style={'backgroundColor': '#5474D5'}),
         html.Div(id='output-message')  # For displaying output messages
     ],
 )
-
 #student number dropdown
 @app.callback(
     [
@@ -683,7 +679,6 @@ def populate_mem_st_num_dropdown(pathname, searchterm):
             where not mem_delete_ind
         """
         values = []
-
         if searchterm:
             sql += """
                 AND mem_st_num ILIKE %s
@@ -691,15 +686,12 @@ def populate_mem_st_num_dropdown(pathname, searchterm):
             values.append(f"%{searchterm}%")
             
         sql += " ORDER BY mem_st_num;"
-
         cols = ['mem_id', 'mem_st_num']
         result = db.querydatafromdatabase(sql, values, cols)
         options = [{'label': row['mem_st_num'], 'value': row['mem_id']} for _, row in result.iterrows()]
-
         return options,
     else:
         raise PreventUpdate
-
 #student number row
         
 # Degree dropdown
@@ -722,7 +714,6 @@ def populate_memdegree_dropdown(pathname):
         df = db.querydatafromdatabase(sql, values, cols)
         
         mem_degree = df.to_dict('records')
-
         sql = """
         SELECT memtype_name as label, memtype_id  as value
         FROM memtype
@@ -733,7 +724,6 @@ def populate_memdegree_dropdown(pathname):
         df = db.querydatafromdatabase(sql, values, cols)
         
         memtype = df.to_dict('records')
-
         sql = """
         SELECT appbatch_name as label, appbatch_id  as value
         FROM appbatch
@@ -744,16 +734,14 @@ def populate_memdegree_dropdown(pathname):
         df = db.querydatafromdatabase(sql, values, cols)
         
         appbatch = df.to_dict('records')
-
         return [mem_degree, memtype, appbatch]
-    raise PreventUpdate
-
 layout = html.Div([
     cm.navigation,
     cm.top,
     html.Div([
         html.Div([
         dbc.Card([
+            dbc.CardHeader("REAFFILIATION FORM", class_name='flex'),
             dbc.CardHeader("REAFFILIATION FORM", class_name='flex',
                            style={  'background-color': '#2E4178',
                                         'color': 'white',  # White text for header
@@ -770,30 +758,24 @@ layout = html.Div([
     ]),],className='body') 
 ], className='flex body-container')
         ])
-
-
 # FILLING THE FORM FOR EXISTING MEMBERS AND CLEARING IT AFTER SAVING
-
 @app.callback(
     [
         Output('exist_mem_row', 'style'),
         Output('exist_batch_row', 'style'),
         Output('new_mem_row', 'style'),
         Output('new_batch_row', 'style'),
-
         Output('mem_fn', 'value'),
         Output('mem_mn', 'value'),
         Output('mem_ln', 'value'),
         Output('mem_sf', 'value'),
         Output('mem_bd', 'value'),
-
         Output('mem_cn', 'value'),
         Output('mem_emergency', 'value'),
         Output('mem_email', 'value'),
         Output('mem_up_email','value'),
         Output('mem_pres_add', 'value'),
         Output('mem_perma_add', 'value'),
-
         Output('mem_year_batch', 'value'),
         Output('mem_year_standing', 'value'),
         Output('mem_degree', 'value'),
@@ -801,13 +783,11 @@ layout = html.Div([
         Output('reaff_sem','value'),
         Output('reaff_acad_year','value'),
         Output('mem_other_org', 'value'),
-
         Output('student_number_list', 'value'),
         Output('student_number_new', 'value'),
         Output('app_batch_list','value'),
         Output('app_batch_new','value'),
         Output('reaff_gwa', 'value'),
-
         Output('reaff_choice1','value'),
         Output('reaff_choice2','value'),
         Output('reaff_choice3','value'),
@@ -815,7 +795,6 @@ layout = html.Div([
         Output('reaff_choice5','value'),
         Output('reaff_choice6','value'),
         Output('reaff_is_paid', 'value'),
-
         Output('output-message', 'children')
     ],
     [
@@ -832,14 +811,12 @@ layout = html.Div([
         State('mem_ln', 'value'),
         State('mem_sf', 'value'),
         State('mem_bd', 'value'),
-
         State('mem_cn', 'value'),
         State('mem_emergency', 'value'),
         State('mem_email', 'value'),
         State('mem_up_email','value'),
         State('mem_pres_add', 'value'),
         State('mem_perma_add', 'value'),
-
         State('mem_year_batch', 'value'),
         State('mem_year_standing', 'value'),
         State('mem_degree', 'value'),
@@ -847,11 +824,9 @@ layout = html.Div([
         State('reaff_sem','value'),
         State('reaff_acad_year','value'),
         State('mem_other_org', 'value'),
-
         State('app_batch_list','value'),
         State('app_batch_new','value'),
         State('reaff_gwa', 'value'),
-
         State('reaff_choice1','value'),
         State('reaff_choice2','value'),
         State('reaff_choice3','value'),
@@ -889,7 +864,6 @@ def reaff_form_fill_and_submit(
                 reaff_sem,
                 reaff_acad_year,
                 mem_other_org, 
-
                 mem_app_batch_exist,
                 mem_app_batch_new,
                 reaff_gwa,
@@ -901,45 +875,34 @@ def reaff_form_fill_and_submit(
                 reaff_choice5,
                 reaff_choice6,
                 reaff_is_paid):
-
     current_datetime = datetime.today()
     current_date = current_datetime.date()
-
     if not reaff_is_paid:
         current_date = None
-
     if pathname == '/reaffiliate':
         ctx = dash.callback_context
-
         if ctx.triggered:
             eventid = ctx.triggered[0]['prop_id'].split('.')[0]
-
             if eventid == "submit_form_btn" and submit:
                 if exist_mem:
-
                     variable = [reaff_choice1, reaff_choice2, reaff_choice3, reaff_choice4, reaff_choice5, reaff_choice6]
-
                     seen = set()
                     duplicate = False
-
                     for comm in variable:
                         if comm in seen:
                             duplicate = True
                             break
                         seen.add(comm)
-
                     if not(
                         mem_fn and 
                         mem_ln and 
                         mem_bd and 
-
                         mem_cn and 
                         mem_emergency and 
                         mem_email and 
                         mem_up_email and 
                         mem_pres_add and 
                         mem_perma_add and 
-
                         mem_year_batch and
                         mem_year_standing and 
                         mem_degree and 
@@ -947,7 +910,6 @@ def reaff_form_fill_and_submit(
                         reaff_sem and 
                         reaff_acad_year and 
                         mem_other_org and
-
                         mem_app_batch_exist and
                         reaff_gwa and
                         
@@ -974,7 +936,6 @@ def reaff_form_fill_and_submit(
                                 dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, 
                                 dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, 
                             html.Div("Please choose different committees per rank preference", style={'color': 'red'})]
-
                     else:
                         sql = """
                             UPDATE member
@@ -1007,7 +968,6 @@ def reaff_form_fill_and_submit(
                                   mem_emergency, mem_email, mem_up_email, mem_pres_add, mem_perma_add, mem_year_batch, mem_year_standing, 
                                   mem_degree, mem_other_org, '1', memtype_id, True, False, mem_app_batch_exist, exist_mem]
                         db.modifydatabase(sql, values)
-
                         sql ="""
                             INSERT INTO reaffiliation(
                                     reaff_sem,
@@ -1028,7 +988,6 @@ def reaff_form_fill_and_submit(
                             """
                         values = (reaff_sem, reaff_gwa, reaff_acad_year, reaff_choice1, reaff_choice2, reaff_choice3, reaff_choice4, reaff_choice5, reaff_choice6, False, reaff_is_paid, current_date, exist_mem)
                         db.modifydatabase(sql, values)
-
                         sql ="""
                             SELECT max(reaff_id)
                             FROM reaffiliation
@@ -1036,7 +995,6 @@ def reaff_form_fill_and_submit(
                         values = []
                         df = db.querydatafromdatabase(sql,values)
                         reaff_id = int(df.loc[0,0])
-
                         sql = """
                             SELECT reaff_sem
                             FROM reaffiliation
@@ -1046,7 +1004,6 @@ def reaff_form_fill_and_submit(
                         """
                         values = [reaff_acad_year, exist_mem]
                         df = db.querydatafromdatabase(sql,values)
-
                         if df.empty:
                             if reaff_sem == '1st':
                                 sql = """
@@ -1060,7 +1017,6 @@ def reaff_form_fill_and_submit(
                                 """
                             values = (reaff_acad_year, reaff_id, None, exist_mem)
                             db.modifydatabase(sql, values)
-
                             if reaff_sem == '2nd':
                                 sql = """
                                 INSERT INTO performance(
@@ -1073,8 +1029,6 @@ def reaff_form_fill_and_submit(
                                 """
                             values = (reaff_acad_year, None, reaff_id, exist_mem)
                             db.modifydatabase(sql, values)
-
-
                         if not df.empty:
                             prev_sem = df.loc[0,0]
                             if prev_sem == '2nd':
@@ -1089,7 +1043,6 @@ def reaff_form_fill_and_submit(
                                 """
                             values = (reaff_acad_year, reaff_id, None, exist_mem)
                             db.modifydatabase(sql, values)
-
                             if prev_sem == '1st':
                                 sql = """
                                 INSERT INTO performance(
@@ -1104,7 +1057,6 @@ def reaff_form_fill_and_submit(
                             db.modifydatabase(sql, values)
                         
                         message = "Existing Member Reaffiliated Successfully"
-
                         return [dash.no_update, dash.no_update, dash.no_update, dash.no_update, 
                                 None, None, None, None, None, 
                                 None, None, None, None, None, None, 
@@ -1112,32 +1064,25 @@ def reaff_form_fill_and_submit(
                                 None, None, None, None, None, 
                                 None, None, None, None, None, None, None, 
                             html.Div(message, style={'color': 'green'})]
-
                 if new_mem:
-
                     variable = [reaff_choice1, reaff_choice2, reaff_choice3, reaff_choice4, reaff_choice5, reaff_choice6]
-
                     seen = set()
                     duplicate = False
-
                     for comm in variable:
                         if comm in seen:
                             duplicate = True
                             break
                         seen.add(comm)
-
                     if not(
                         mem_fn and 
                         mem_ln and 
                         mem_bd and 
-
                         mem_cn and 
                         mem_emergency and 
                         mem_email and 
                         mem_up_email and 
                         mem_pres_add and 
                         mem_perma_add and 
-
                         mem_year_batch and
                         mem_year_standing and 
                         mem_degree and 
@@ -1145,7 +1090,6 @@ def reaff_form_fill_and_submit(
                         reaff_sem and 
                         reaff_acad_year and 
                         mem_other_org and
-
                         mem_app_batch_new and
                         reaff_gwa and
                         
@@ -1172,7 +1116,6 @@ def reaff_form_fill_and_submit(
                                 dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, 
                                 dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, 
                             html.Div("Please choose different committees per rank preference", style={'color': 'red'})]
-
                     else:
                         sql = """
                             SELECT appbatch_id
@@ -1181,7 +1124,6 @@ def reaff_form_fill_and_submit(
                         """
                         value = [mem_app_batch_new]
                         df = db.querydatafromdatabase(sql,value)
-
                         if df.empty:
                             sql = """
                                 INSERT INTO appbatch(
@@ -1191,7 +1133,6 @@ def reaff_form_fill_and_submit(
                             """
                             value = (mem_app_batch_new)
                             db.modifydatabase(sql, value)
-
                             sql = """
                                 SELECT appbatch_id
                                 FROM appbatch
@@ -1203,7 +1144,6 @@ def reaff_form_fill_and_submit(
                         else:
                             mem_app_batch_new = int(df.loc[0,0])
                             
-
                         sql = """
                             INSERT INTO member(
                                 mem_fn,
@@ -1234,7 +1174,6 @@ def reaff_form_fill_and_submit(
                         values = (mem_fn, mem_mn, mem_ln, mem_sf, new_mem, mem_bd, mem_cn, mem_emergency, mem_email, mem_up_email, 
                                 mem_pres_add, mem_perma_add, mem_year_batch, mem_year_standing, mem_degree, mem_other_org, '1', memtype_id, True, True, mem_app_batch_new)
                         db.modifydatabase(sql, values)
-
                         sql ="""
                             SELECT max(mem_id)
                             FROM member
@@ -1242,7 +1181,6 @@ def reaff_form_fill_and_submit(
                         values = []
                         df = db.querydatafromdatabase(sql,values)
                         mem_id = int(df.loc[0,0])
-
                         sql ="""
                             INSERT INTO reaffiliation(
                                     reaff_sem,
@@ -1263,7 +1201,6 @@ def reaff_form_fill_and_submit(
                             """
                         values = (reaff_sem, reaff_gwa, reaff_acad_year, reaff_choice1, reaff_choice2, reaff_choice3, reaff_choice4, reaff_choice5, reaff_choice6, True, reaff_is_paid, current_date, mem_id)
                         db.modifydatabase(sql, values)
-
                         sql ="""
                             SELECT max(reaff_id)
                             FROM reaffiliation
@@ -1271,9 +1208,7 @@ def reaff_form_fill_and_submit(
                         values = []
                         df = db.querydatafromdatabase(sql,values)
                         reaff_id = int(df.loc[0,0])
-
                         print(reaff_sem)
-
                         if reaff_sem == '1st':
                             print("activated1")
                             sql = """
@@ -1287,7 +1222,6 @@ def reaff_form_fill_and_submit(
                             """
                         values = (reaff_acad_year, reaff_id, None, mem_id)
                         db.modifydatabase(sql, values)
-
                         if reaff_sem == '2nd':
                             print("activated2")
                             sql = """
@@ -1301,9 +1235,7 @@ def reaff_form_fill_and_submit(
                             """
                         values = (reaff_acad_year, None, reaff_id, mem_id)
                         db.modifydatabase(sql, values)
-
                         message = "New Member Affiliated Successfully"
-
                         return [dash.no_update, dash.no_update, dash.no_update, dash.no_update, 
                                 None, None, None, None, None, 
                                 None, None, None, None, None, None, 
@@ -1311,7 +1243,6 @@ def reaff_form_fill_and_submit(
                                 None, None, None, None, None, 
                                 None, None, None, None, None, None, None, 
                             html.Div(message, style={'color': 'green'})]
-
             if pathname == '/reaffiliate' and eventid == "new_mem_btn" and new_btn:
                 return [{'display': 'none'}, {'display': 'none'}, {'display': 'block'}, {'display': 'block'},
                                 None, None, None, None, None, 
@@ -1329,7 +1260,6 @@ def reaff_form_fill_and_submit(
                                 None, None, None, None, None, 
                                 None, None, None, None, None, None, None, 
                             html.Div(style={'display': 'none'})]
-
     if pathname == '/reaffiliate' and exist_mem:
         sql = """
             select
@@ -1374,9 +1304,7 @@ def reaff_form_fill_and_submit(
             'mem_other_org',
             'appbatch_id'
         ]
-
         df = db.querydatafromdatabase(sql, values, cols)
-
         fn = df['mem_fn'][0]
         mn = df['mem_mn'][0]
         ln = df['mem_ln'][0]
@@ -1393,7 +1321,6 @@ def reaff_form_fill_and_submit(
         degree = df['degree_id'][0]
         other_org = df['mem_other_org'][0]
         app_batch = df['appbatch_id'][0]
-
         return [dash.no_update, dash.no_update, dash.no_update, dash.no_update,
             fn, mn, ln, sf, bd, 
             cn, emergency, email, upmail, pres_add, perma_add, 
@@ -1401,7 +1328,6 @@ def reaff_form_fill_and_submit(
             exist_mem, None, app_batch, None, None,
             dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, dash.no_update, 
             html.Div(style={'disply': 'none'})]    
-
     else:
         raise PreventUpdate
     
