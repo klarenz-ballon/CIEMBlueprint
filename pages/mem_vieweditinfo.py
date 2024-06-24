@@ -29,10 +29,15 @@ layout = html.Div([
         dbc.Button("Go Back", 
             id="back_btn", 
             color="primary",
-            href='/members'
+            href='/members',
+            style={'background-color': '#5474D5'}
             ),
         dbc.Card([
-            dbc.CardHeader(html.H4("MEMBER INFORMATION")),
+            dbc.CardHeader("MEMBER INFORMATION",
+                                   style={  'background-color': '#2E4178',
+                                        'color': 'white',  # White text for header
+                                        'font-size': '24px',
+                                        'font-weight': 'bold'}),
             dbc.CardBody([
                 # First row (1 card)
                 dbc.Row([
@@ -42,6 +47,7 @@ layout = html.Div([
                                 html.Div([
                                     html.H5("PERSONAL", className = "flex-grow-1"),
                                 ], className = "d-flex align-items-center justify-content-between"),
+                                style={'background-color': '#E8EDF7'}
                             ),
                             dbc.CardBody([
                                 dbc.Row([
@@ -98,6 +104,7 @@ layout = html.Div([
                                 html.Div([
                                     html.H5("CONTACT", className = "flex-grow-1")
                                 ], className = "d-flex align-items-center justify-content-between"),
+                                style={'background-color': '#E8EDF7'}
                             ),
                             dbc.CardBody([
                                  dbc.Row([
@@ -147,6 +154,7 @@ layout = html.Div([
                                 html.Div([
                                     html.H5("SCHOOL & MEMBERSHIP", className = "flex-grow-1")
                                 ], className = "d-flex align-items-center justify-content-between"),
+                                style={'background-color': '#E8EDF7'}
                             ),
                             dbc.CardBody([
                                 dbc.Row([
@@ -201,6 +209,7 @@ layout = html.Div([
                                 html.Div([
                                     html.H5("REAFFILIATION & COMMITTEE ASSIGNMENT", className = "flex-grow-1")
                                 ], className = "d-flex align-items-center justify-content-between"),
+                                style={'background-color': '#E8EDF7'}
                             ),
                             dbc.CardBody([
                                 dbc.Row([
@@ -331,6 +340,7 @@ layout = html.Div([
                                         #width = 2
                                         #    ),
                                 ], className = "d-flex align-items-center justify-content-between"),
+                                style={'background-color': '#E8EDF7'}
                             ),
                             dbc.CardBody([
                                 dbc.Container(["No Performances to Display"], id="perf-table", class_name='table-wrapper p-3', style={'margin-top':'0em'})
@@ -350,10 +360,11 @@ layout = html.Div([
                                 html.Div([
                                     html.H5("HEADSHIP", className = "flex-grow-1"),
                                     dbc.Col(
-                                        dbc.Button("Add", id="add_head_btn", href="/headship?mode=add&id=", color="primary", style={"width":"100%",'display': 'block','font-size':'14px'}),
+                                        dbc.Button("Add", id="add_head_btn", href="/headship?mode=add&mem_id=", color="primary", style={"width":"100%",'display': 'block','font-size':'14px','background-color':'#5474D5'}),
                                         width = 2
                                             ),
                                 ], className = "d-flex align-items-center justify-content-between"),
+                                style={'background-color': '#E8EDF7'}
                             ),
                             dbc.CardBody([
                                 dbc.Container(["No Headships to Display"], id="headship-table", class_name='table-wrapper p-3', style={'margin-top':'0em'})
@@ -423,7 +434,7 @@ def perf_table(url_search):
 
         if not df.empty:
             df.fillna('Null', inplace=True)
-            df['Update'] = df['Update'].apply(lambda x: f'<div style="text-align: center;"><a href="/performance?perf_id={x}"><button class="btn btn-primary btn-sm" style="font-size: 12px;">Edit</button></a>')
+            df['Update'] = df['Update'].apply(lambda x: f'<div style="text-align: center;"><a href="/performance?perf_id={x}"><button class="btn btn-primary btn-sm" style="font-size: 12px; background-color: 5474D5;">Edit</button></a>')
             table = dash_table.DataTable(
                 data=df.to_dict('records'),
                 columns=[{'name': i, 'id': i, 'presentation': 'markdown'} if i == 'Graduated?' or 'Member Info' else {'name': i, 'id': i} for i in df.columns],
@@ -440,7 +451,7 @@ def perf_table(url_search):
                     'maxWidth': 0
                 },
                 style_header={
-                    'background-color': '#000097',
+                    'background-color': '#2E4178',
                     'color': 'white',
                     'text-align': 'center',
                     'font-family': 'Arial, sans-serif',
@@ -451,7 +462,7 @@ def perf_table(url_search):
                 style_data_conditional=[
                     {
                         'if': {'row_index': 'odd'},
-                        'backgroundColor': '#f8f9fa'
+                        'backgroundColor': '#E8EFFF'
                     },
                     {
                         'if': {'row_index': 'even'},
@@ -508,7 +519,7 @@ def headship_table(url_search):
         df = db.querydatafromdatabase(sql, values, cols)
 
         if not df.empty:
-            df['Update'] = df.apply(lambda row: f'<div style="text-align: center;"><a href="/headship?mode=edit&mem_id={row["mem_id"]}&head_id={row["head_id"]}"><button class="btn btn-primary btn-sm" style="font-size: 12px;">Edit</button></a></div>', axis=1)
+            df['Update'] = df.apply(lambda row: f'<div style="text-align: center;"><a href="/headship?mode=edit&mem_id={row["mem_id"]}&head_id={row["head_id"]}"><button class="btn btn-primary btn-sm" style="font-size: 12px;background-color: #5474D5;">Edit</button></a></div>', axis=1)
             df = df.drop(columns=['head_id', 'mem_id'])  # Drop these columns if you don't want them in the final table
 
             table = dash_table.DataTable(
@@ -527,7 +538,7 @@ def headship_table(url_search):
                     'maxWidth': 0
                 },
                 style_header={
-                    'background-color': '#000097',  # Blue background for header
+                    'background-color': '#2E4178',  # Blue background for header
                     'color': 'white',  # White text for header
                     'text-align': 'center',
                     'font-family': 'Arial, sans-serif',
@@ -538,7 +549,7 @@ def headship_table(url_search):
                 style_data_conditional=[
                     {
                         'if': {'row_index': 'odd'},
-                        'backgroundColor': '#f8f9fa'  # Light grey for odd rows
+                        'backgroundColor': '#E8EFFF'  # Light grey for odd rows
                     },
                     {
                         'if': {'row_index': 'even'},
@@ -553,9 +564,9 @@ def headship_table(url_search):
                 page_size=10,
                 style_table={'height': '200%', 'overflow': 'auto'}
             )
-            add_head_btn_href = f"/headship?mode=add&id={mem_id}"
+            add_head_btn_href = f"/headship?mode=add&mem_id={mem_id}"
             return [table], add_head_btn_href
-        return ["No Headships to Display"], f"/headship?mode=add&id={mem_id}"
+        return ["No Headships to Display"], f"/headship?mode=add&mem_id={mem_id}"
     raise PreventUpdate
 
 # DROPDOWN CALLBACK
@@ -578,13 +589,8 @@ def headship_table(url_search):
 def populate_dropdowns(url_search, pathname, acad_year, acad_sem):
     parsed = urlparse(url_search)
     query_mem_id = parse_qs(parsed.query)
-    print("start of printing query_mem_id")
-    print(query_mem_id)
-    if not "id" in query_mem_id:
-        raise PreventUpdate
+    mem_id = query_mem_id['id'][0]
 
-    mem_id=query_mem_id['id'][0]
-    
     if pathname == '/mem_vieweditinfo':
         
         sql = """
@@ -702,8 +708,7 @@ def populate_dropdowns(url_search, pathname, acad_year, acad_sem):
             academic_sem = df.to_dict('records')
             
         return [memtype, status, mem_degree, appbatch, academic_year, academic_sem]
-    raise PreventUpdate
-
+    
 #MEMBER PERSONAL INFORMATION
 @app.callback(
     [
@@ -1178,11 +1183,3 @@ def reaff_form_fill_and_submit(
 
     else:
         raise PreventUpdate
-
-
-
-
-
-
-
-
