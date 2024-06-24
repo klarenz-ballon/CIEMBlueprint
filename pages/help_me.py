@@ -27,7 +27,7 @@ layout = html.Div([
                     dbc.Row(
                         dbc.Col(
                             html.A(
-                                href="https://drive.google.com/file/d/16n-Ks5AjTx_BPvb96VR1--h5KQ9Ltdt_/view?fbclid=IwZXh0bgNhZW0CMTEAAR372cLoBAiNT4JnjCZBAHsndv5-AF2lnVHeog3Uig4V2_1OvjawWXcRp9k_aem_C6PoSRPUsDSEdYMaL77osA",
+                                href="https://drive.google.com/file/d/16n-Ks5AjTx_BPvb96VR1--h5KQ9Ltdt_/view",
                                 target="_blank",
                                 children=[
                                     html.Img(
